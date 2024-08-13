@@ -24,9 +24,9 @@ class LoginController extends Controller
             ], 422);
         }
 
-        $admin = User::where('username', $request->username)->first();
+        $User = User::where('username', $request->username)->first();
 
-        if (!$admin || $request->password !== $admin->password) {
+        if (!$User || $request->password !== $User->password) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid credentials',
@@ -36,9 +36,9 @@ class LoginController extends Controller
 
         $token = Str::random(60);
 
-        if (!$admin->remember_token) {
-            $admin->remember_token = $token;
-            $admin->save();
+        if (!$User->remember_token) {
+            $User->remember_token = $token;
+            $User->save();
         }
 
         return response()->json([
@@ -47,11 +47,11 @@ class LoginController extends Controller
             'data' => [
                 'token' => $token,
                 'admin' => [
-                    'id' => $admin->id,
-                    'name' => $admin->name,
-                    'username' => $admin->username,
-                    'phone' => $admin->phone,
-                    'email' => $admin->email,
+                    'id' => $User->id,
+                    'name' => $User->name,
+                    'username' => $User->username,
+                    'phone' => $User->phone,
+                    'email' => $User->email,
                 ],
             ],
         ], 200);
@@ -59,18 +59,18 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        $token = $request->header('Authorization'); 
+        $token = str_replace('Bearer ', '', $request->header('Authorization'));
         $user = User::where('remember_token', $token)->first();
-
+    
         if ($user) {
-            $user->rememberToken = null;
+            $user->remember_token = null;
             $user->save();
-        }
+        } 
 
         return response()->json([
             'status' => 'success',
             'message' => 'Logged out successfully',
-
         ], 200);
     }
+    
 }

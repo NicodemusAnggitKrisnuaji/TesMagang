@@ -16,8 +16,7 @@ use App\Http\Controllers\DataController;
 |
 */
 
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout']);
+
 
 Route::middleware('auth.token')->group(function () {
     Route::get('/divisions', [DataController::class, 'divisi']);
@@ -26,3 +25,7 @@ Route::middleware('auth.token')->group(function () {
     Route::put('/update/{id}', [DataController::class, 'update']);
     Route::delete('/destroy/{id}', [DataController::class, 'destroy']);
 });
+
+Route::post('/login', [LoginController::class, 'login']);
+
+Route::post('/logout', [LoginController::class, 'logout']);
